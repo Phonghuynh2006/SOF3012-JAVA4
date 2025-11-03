@@ -3,7 +3,7 @@ name: Notify Discord on Push
 on:
   push:
     branches:
-      - "*"  # Hoặc ghi tên branch cụ thể như 'master'
+      - "*"  # hoặc ghi rõ tên branch như 'main', 'master'
 
 jobs:
   notify_discord:
@@ -14,7 +14,8 @@ jobs:
           TIMESTAMP=$(date +"%d/%m/%Y %H:%M:%S")
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d "{
-            \"content\": \"📌 Commit mới!\n📁 Repo: ${{ github.repository }}\n🌿 Nhánh: ${{ github.ref_name }}\n👤 Tác giả: ${{ github.event.head_commit.author.name }}\n📝 Nội dung: ${{ github.event.head_commit.message }}\n\n🕒 Thời gian: ${TIMESTAMP}\n🔗 Link: ${{ github.event.head_commit.url }}\"
-          }" \
-          ${{ secrets.DISCORD_WEBHOOK }}
+          -d @- ${{ secrets.DISCORD_WEBHOOK }} <<EOF
+          {
+            "content": "📢 **Commit mới được đẩy lên GitHub!**\n\n📁 **Repo:** ${{ github.repository }}\n🌿 **Nhánh:** ${{ github.ref_name }}\n👤 **Tác giả:** ${{ github.event.head_commit.author.name }}\n📝 **Nội dung:** ${{ github.event.head_commit.message }}\n🕒 **Thời gian:** ${TIMESTAMP}\n🔗 **Link:** ${{ github.event.head_commit.url }}"
+          }
+          EOF
