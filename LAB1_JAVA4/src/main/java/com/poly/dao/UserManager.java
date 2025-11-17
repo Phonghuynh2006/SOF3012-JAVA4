@@ -1,129 +1,113 @@
 package com.poly.dao;
 
-
-import com.poly.model.User;
-
-import javax.persistence.*;
 import java.util.List;
+import javax.persistence.*;
+import com.poly.model.User;
 
 public class UserManager {
 
-	    private static final String PU = "PolyOE";
-	    private EntityManagerFactory emf;
+    EntityManagerFactory factory = Persistence.createEntityManagerFactory("PolyOE");
+    EntityManager em = factory.createEntityManager();
 
-	    public UserManager() {
-	        emf = Persistence.createEntityManagerFactory(PU);
-	    }
+    public void findAll() {
+        String jpql = "SELECT o FROM User o";
+        TypedQuery<User> q = em.createQuery(jpql, User.class);
+        List<User> list = q.getResultList();
+        list.forEach(u -> {
+            String fullname = u.getFullname();
+            boolean admin = Boolean.TRUE.equals(u.getAdmin());
+            System.out.println(fullname + ": " + admin);
+        });
+    }
 
-	    public void close() {
-	        if (emf != null) emf.close();
-	    }
+    public void findById() { 
+        User user = em.find(User.class, "07"); 
+        if (user != null) {
+            String fullname = user.getFullname();
+            boolean admin = Boolean.TRUE.equals(user.getAdmin());
+            System.out.println(fullname + ": " + admin);
+        } else {
+            System.out.println("Không tìm thấy");
+        }
+    }
 
-	    // 1. findAll()
-	    public List<User> findAll() {
-	        EntityManager em = emf.createEntityManager();
-	        try {
-	            TypedQuery<User> q = em.createQuery("SELECT u FROM User u", User.class);
-	            return q.getResultList();
-	        } finally {
-	            em.close();
-	        }
-	    }
+    public void create() {
+        User user = new User();
+        user.setId("07");
+        user.setPassword("123");
+        user.setEmail("teo@gmail.com");
+        user.setFullname("Tèo");
+        user.setAdmin(false);
 
-	    // 2. findById
-	    public User findById(String id) {
-	        EntityManager em = emf.createEntityManager();
-	        try {
-	            return em.find(User.class, id);
-	        } finally {
-	            em.close();
-	        }
-	    }
+        try {
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+        }
+    }
 
-	    // 3. insert (persist)
-	    public boolean insert(User u) {
-	        EntityManager em = emf.createEntityManager();
-	        EntityTransaction tx = em.getTransaction();
-	        try {
-	            tx.begin();
-	            em.persist(u);
-	            tx.commit();
-	            return true;
-	        } catch (Exception ex) {
-	            if (tx.isActive()) tx.rollback();
-	            ex.printStackTrace();
-	            return false;
-	        } finally {
-	            em.close();
-	        }
-	    }
+    public void update() {
+        try {
+            User user = em.find(User.class, "03");
+            if (user == null) { System.out.println("Không có"); return; }
+            user.setFullname("Nguyễn Văn Tèo");
+            user.setEmail("teonv@gmail.com");
 
-	    // 4. update (merge)
-	    public boolean update(User u) {
-	        EntityManager em = emf.createEntityManager();
-	        EntityTransaction tx = em.getTransaction();
-	        try {
-	            tx.begin();
-	            em.merge(u);
-	            tx.commit();
-	            return true;
-	        } catch (Exception ex) {
-	            if (tx.isActive()) tx.rollback();
-	            ex.printStackTrace();
-	            return false;
-	        } finally {
-	            em.close();
-	        }
-	    }
+            em.getTransaction().begin();
+            em.merge(user);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	    // 5. delete
-	    public boolean delete(String id) {
-	        EntityManager em = emf.createEntityManager();
-	        EntityTransaction tx = em.getTransaction();
-	        try {
-	            tx.begin();
-	            User u = em.find(User.class, id);
-	            if (u != null) {
-	                em.remove(u);
-	                tx.commit();
-	                return true;
-	            } else {
-	                tx.rollback();
-	                return false;
-	            }
-	        } catch (Exception ex) {
-	            if (tx.isActive()) tx.rollback();
-	            ex.printStackTrace();
-	            return false;
-	        } finally {
-	            em.close();
-	        }
-	    }
+    public void deleteById() {
+        try {
+            User user = em.find(User.class, "02");
+            if (user == null) { System.out.println("Không có"); return; }
+            em.getTransaction().begin();
+            em.remove(user);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+        }
+    }
+    
+    public void findByEmailAndRole() {
+        String jpql = "SELECT o FROM User o WHERE o.email LIKE :search AND o.admin = :role";
+        TypedQuery<User> query = em.createQuery(jpql, User.class);
 
-	    // Bài 3: tìm users có email kết thúc @fpt.edu.vn và không phải admin
-	    public List<User> findByEmailDomainAndNotAdmin(String domain) {
-	        EntityManager em = emf.createEntityManager();
-	        try {
-	            TypedQuery<User> q = em.createQuery("SELECT u FROM User u WHERE u.email LIKE :search AND u.admin = :role", User.class);
-	            q.setParameter("search", "%" + domain);
-	            q.setParameter("role", false);
-	            return q.getResultList();
-	        } finally {
-	            em.close();
-	        }
-	    }
+        // gán giá trị cho tham số
+        query.setParameter("search", "%@fpt.edu.vn");
+        query.setParameter("role", false);  // không phải admin
 
-	    // Bài 4: phân trang, trả về danh sách pageNumber (0-based) với pageSize
-	    public List<User> findPage(int pageNumber, int pageSize) {
-	        EntityManager em = emf.createEntityManager();
-	        try {
-	            TypedQuery<User> q = em.createQuery("SELECT u FROM User u ORDER BY u.id", User.class);
-	            q.setFirstResult(pageNumber * pageSize);
-	            q.setMaxResults(pageSize);
-	            return q.getResultList();
-	        } finally {
-	            em.close();
-	        }
-	    }
-	
+        List<User> list = query.getResultList();
+
+        System.out.println("===== USERS có email @fpt.edu.vn và không phải admin =====");
+        list.forEach(u -> {
+            System.out.println(u.getFullname() + " - " + u.getEmail());
+        });
+    }
+
+    public void findPage() {
+        int pageNumber = 2;  
+        int pageSize = 5;
+
+        String jpql = "SELECT u FROM User u";
+        TypedQuery<User> query = em.createQuery(jpql, User.class);
+
+
+        query.setFirstResult(pageNumber * pageSize);
+        query.setMaxResults(pageSize);
+
+        List<User> list = query.getResultList();
+        list.forEach(u -> {
+            System.out.println(u.getId() + " - " + u.getFullname() + " - " + u.getEmail());
+        });
+    }
+
 }
