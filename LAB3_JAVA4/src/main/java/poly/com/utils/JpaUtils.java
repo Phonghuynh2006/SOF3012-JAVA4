@@ -5,7 +5,7 @@ import jakarta.persistence.Persistence;
 public class JpaUtils {
     private static EntityManagerFactory emf;
     static {
-        emf = Persistence.createEntityManagerFactory("PolyOE"); 
+        emf = Persistence.createEntityManagerFactory("ASM_JAVA4"); 
     }
     public static EntityManager getEntityManager() {
         return emf.createEntityManager();

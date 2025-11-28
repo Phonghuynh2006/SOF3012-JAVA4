@@ -19,56 +19,22 @@
       </plugin>
     </plugins>
   </build>
-<dependencies>
-    <!-- Jakarta Persistence (JPA) -->
-    <dependency>
-        <groupId>jakarta.persistence</groupId>
-        <artifactId>jakarta.persistence-api</artifactId>
-        <version>3.1.0</version>
-    </dependency>
+  
+  <dependencies>
+  <!-- JSTL API cho Jakarta EE 10 -->
+<dependency>
+    <groupId>jakarta.servlet.jsp.jstl</groupId>
+    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+    <version>3.0.0</version>
+</dependency>
 
-    <!-- Hibernate Core -->
-    <dependency>
-        <groupId>org.hibernate.orm</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>6.4.4.Final</version>
-    </dependency>
+<!-- Implementation (Glassfish) -->
+<dependency>
+    <groupId>org.glassfish.web</groupId>
+    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+    <version>3.0.0</version>
+</dependency>
 
-    <!-- SQL Server JDBC Driver -->
-    <dependency>
-        <groupId>com.microsoft.sqlserver</groupId>
-        <artifactId>mssql-jdbc</artifactId>
-        <version>12.2.0.jre11</version>
-    </dependency>
+  </dependencies>
 
-    <!-- Lombok (tự sinh getter/setter) -->
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.32</version>
-        <scope>provided</scope>
-    </dependency>
-
-    <!-- Servlet API (nếu chưa có) -->
-    <dependency>
-        <groupId>jakarta.servlet</groupId>
-        <artifactId>jakarta.servlet-api</artifactId>
-        <version>6.0.0</version>
-        <scope>provided</scope>
-    </dependency>
-    
-	<!-- BeanUtils: để populate form -->
-	<dependency>
-	  <groupId>commons-beanutils</groupId>
-	  <artifactId>commons-beanutils</artifactId>
-	  <version>1.9.3</version>
-	</dependency>
-	
-	<!-- JSTL: dùng trong JSP -->
-	<dependency>
-	  <groupId>org.glassfish.web</groupId>
-	  <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-	  <version>2.0.0</version>
-	</dependency>
-</dependencies>
 </project>
