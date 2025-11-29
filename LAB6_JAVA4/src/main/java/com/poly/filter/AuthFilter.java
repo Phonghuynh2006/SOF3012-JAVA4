@@ -37,14 +37,16 @@ public class AuthFilter implements Filter {
 
         String uri = req.getRequestURI();
 
+        // Nếu chưa đăng nhập → chuyển tới login
         if (user == null) {
             session.setAttribute(SECURITY_URI, uri);
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
+        // Nếu vào admin mà không phải admin
         if (uri.contains("/admin/") && !user.getAdmin()) {
-            resp.sendError(403, "Access denied");
+            resp.sendError(403, "Access Denied");
             return;
         }
 

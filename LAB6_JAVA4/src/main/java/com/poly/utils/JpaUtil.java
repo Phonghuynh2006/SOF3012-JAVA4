@@ -11,7 +11,7 @@ public class JpaUtil {
 
     static {
         try {
-            factory = Persistence.createEntityManagerFactory("lab6PU");
+            factory = Persistence.createEntityManagerFactory("Lab6");
         } catch (Exception e) {
             e.printStackTrace();
         }

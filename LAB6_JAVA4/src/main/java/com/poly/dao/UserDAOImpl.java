@@ -1,5 +1,6 @@
 package com.poly.dao;
 
+import com.poly.dao.UserDAO;
 import com.poly.entity.User;
 import com.poly.utils.JpaUtil;
 
@@ -13,4 +14,3 @@ public class UserDAOImpl implements UserDAO {
         return em.find(User.class, username);
     }
 }
-
