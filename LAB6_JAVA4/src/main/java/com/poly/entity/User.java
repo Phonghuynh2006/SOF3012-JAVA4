@@ -10,17 +10,14 @@ public class User {
 
     @Id
     private String username;
-
     private String password;
+    private boolean admin;
 
-    private Boolean admin;
-
-    // ====== GETTERS & SETTERS ======
-
+    // GETTER / SETTER
+    
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -28,16 +25,14 @@ public class User {
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Boolean getAdmin() {
+    public boolean isAdmin() {
         return admin;
     }
-
-    public void setAdmin(Boolean admin) {
+    public void setAdmin(boolean admin) {
         this.admin = admin;
     }
 }

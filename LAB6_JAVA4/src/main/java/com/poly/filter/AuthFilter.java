@@ -1,55 +1,58 @@
 package com.poly.filter;
 
+import java.io.IOException;
+
 import com.poly.entity.User;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import java.io.IOException;
-
 @WebFilter({
-    "/admin/*",
     "/account/change-password",
     "/account/edit-profile",
     "/video/like/*",
-    "/video/share/*"
+    "/video/share/*",
+    "/admin/*"
 })
-public class AuthFilter implements Filter {
-
-    public static final String SECURITY_URI = "securityUri";
+public class AuthFilter extends HttpFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain chain)
             throws IOException, ServletException {
-
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
 
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
-
         String uri = req.getRequestURI();
 
-        // Nếu chưa đăng nhập → chuyển tới login
+        // CHƯA LOGIN → CHUYỂN TỚI LOGIN
         if (user == null) {
-            session.setAttribute(SECURITY_URI, uri);
+            session.setAttribute("securityUri", uri);
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
-        // Nếu vào admin mà không phải admin
-        if (uri.contains("/admin/") && !user.getAdmin()) {
-            resp.sendError(403, "Access Denied");
+        // TRUY CẬP ADMIN MÀ KHÔNG PHẢI ADMIN
+        if (uri.contains("/admin/") && !user.isAdmin()) {
+            resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
-        chain.doFilter(request, response);
+        // Cho qua filter
+        chain.doFilter(req, resp);
+    }
+
+    @Override
+    public void init(FilterConfig fConfig) throws ServletException {
+    }
+
+    @Override
+    public void destroy() {
     }
 }

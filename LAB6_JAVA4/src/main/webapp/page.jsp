@@ -7,7 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>Xin chào</h1>
+<h2>Trang Page Test</h2>
+<p>${message}</p>
+<a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
 
 </body>
 </html>

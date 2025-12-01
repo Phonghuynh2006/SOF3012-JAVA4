@@ -1,5 +1,7 @@
 package com.poly.controller;
 
+import java.io.IOException;
+
 import com.poly.dao.UserDAO;
 import com.poly.dao.UserDAOImpl;
 import com.poly.entity.User;
@@ -12,14 +14,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import java.io.IOException;
-
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
         req.getRequestDispatcher("/login.jsp").forward(req, resp);
     }
 
@@ -34,16 +35,23 @@ public class LoginServlet extends HttpServlet {
         User user = dao.findById(username);
 
         if (user == null) {
-            req.setAttribute("message", "Invalid username");
-        } else if (!user.getPassword().equals(password)) {
-            req.setAttribute("message", "Invalid password");
-        } else {
+            req.setAttribute("message", "sai username");
+        }
+        else if (!user.getPassword().equals(password)) {
+            req.setAttribute("message", "sai password");
+        }
+        else {
+            // ĐĂNG NHẬP THÀNH CÔNG
             HttpSession session = req.getSession();
             session.setAttribute("user", user);
 
-            String returnUri = (String) session.getAttribute(AuthFilter.SECURITY_URI);
-            if (returnUri != null) {
-                resp.sendRedirect(returnUri);
+            req.setAttribute("message", "Login thành công");
+
+            // LẤY URL ĐÃ LƯU TRONG FILTER
+            String securityUri = (String) session.getAttribute("securityUri");
+            if (securityUri != null) {
+                session.removeAttribute("securityUri");
+                resp.sendRedirect(securityUri);
                 return;
             }
         }
