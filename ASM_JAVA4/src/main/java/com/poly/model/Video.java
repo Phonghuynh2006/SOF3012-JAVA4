@@ -2,12 +2,7 @@ package com.poly.model;
 
 import java.io.Serializable;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Videos")
@@ -20,26 +15,34 @@ public class Video implements Serializable {
     @Column(name = "VideoID")
     private Integer id;
 
-    @Column(name = "Title")
+    @Column(name = "Title", nullable = false, length = 200)
     private String title;
 
-    @Column(name = "Poster")
+    @Column(name = "Poster", nullable = false, length = 200)
     private String poster;
 
+    @Lob
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "Views")
-    private Integer views;
+    @Column(name = "Views", nullable = false)
+    private Integer views = 0;
 
-    @Column(name = "Active")
-    private Boolean active;
+    @Column(name = "Active", nullable = false)
+    private Boolean active = true;
 
-    @Column(name = "YoutubeID")
+    @Column(name = "YoutubeID", nullable = false, length = 50)
     private String youtubeId;
 
     // ===== Constructor =====
     public Video() {}
+
+    public Video(String title, String poster, String description, String youtubeId) {
+        this.title = title;
+        this.poster = poster;
+        this.description = description;
+        this.youtubeId = youtubeId;
+    }
 
     // ===== Getter & Setter =====
     public Integer getId() {

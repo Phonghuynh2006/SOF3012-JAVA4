@@ -1,12 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Đăng nhập</title>
 
-<link rel="stylesheet" href="layout/login.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/layout/login.css">
 </head>
 <body>
 
@@ -24,46 +26,41 @@
                     <path d="M6.36881 ..."></path>
                     <path d="M12 11.9998 ..."></path>
                 </svg>
-                <h1 class="login-title">Chào mừng trở lại</h1>
+                <h1 class="login-title">ĐĂNG NHẬP</h1>
             </div>
 
-            <!-- ========================== -->
-            <!--       FORM LOGIN           -->
-            <!-- ========================== -->
-
+            <!-- ===== FORM LOGIN ===== -->
             <form method="post" action="login" class="login-form">
 
-                <!-- Hiển thị lỗi -->
-                <p style="color:#ff4d4d; font-size:14px; text-align:center;">
-                    ${error}
-                </p>
+                <!-- lỗi -->
+                <c:if test="${not empty error}">
+                    <p style="color:#ff4d4d; font-size:14px; text-align:center;">
+                        ${error}
+                    </p>
+                </c:if>
 
                 <div class="form-group">
-                    <label class="form-label">Email hoặc Tên người dùng</label>
-                    <input
-                        type="text"
-                        name="username"
-                        class="form-input"
-                        placeholder="Nhập email hoặc tên người dùng"
-                        required
-                    >
+                    <label class="form-label">Tên đăng nhập</label>
+                    <input type="text"
+                           name="username"
+                           class="form-input"
+                           placeholder="Nhập tên đăng nhập"
+                           required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Mật khẩu</label>
                     <div class="password-wrapper">
-                        <input
-                            type="password"
-                            name="password"
-                            class="form-input-password"
-                            placeholder="Nhập mật khẩu"
-                            required
-                        >
+                        <input type="password"
+                               name="password"
+                               class="form-input-password"
+                               placeholder="Nhập mật khẩu"
+                               required>
                         <div class="password-toggle">👁️</div>
                     </div>
                 </div>
 
-                <a href="forgot-password.jsp">
+                <a href="forgot-password">
                     <div class="forgot-link">Quên mật khẩu?</div>
                 </a>
 
@@ -78,13 +75,13 @@
 
                     <div class="social-row">
                         <button class="social-btn">
-                            <img src="https://lh3..." alt="Google">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png" alt="Google">
                         </button>
                         <button class="social-btn">
-                            <img src="https://lh3..." alt="Facebook">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" alt="Facebook">
                         </button>
                         <button class="social-btn">
-                            <img src="https://lh3..." alt="Apple">
+                            <img src="https://images.seeklogo.com/logo-png/49/2/twitter-x-logo-png_seeklogo-492396.png" alt="Apple">
                         </button>
                     </div>
                 </div>
@@ -92,8 +89,9 @@
 
             <p class="login-footer-text">
                 Bạn là người mới?
-                <a href="register.jsp">Đăng ký ngay.</a>
+                <a href="register">Đăng ký ngay.</a>
             </p>
+
         </div>
     </div>
 </div>

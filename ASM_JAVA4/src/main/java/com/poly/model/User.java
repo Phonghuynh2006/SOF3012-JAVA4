@@ -2,42 +2,52 @@ package com.poly.model;
 
 import java.io.Serializable;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Users")
 public class User implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "UserID")
-	private Integer userId;
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "UserID")
+    private Integer userId;
 
-    @Column(name = "Username")
+    @Column(name = "Username", nullable = false, length = 50)
     private String username;
 
-    @Column(name = "Password")
+    @Column(name = "Password", nullable = false, length = 100)
     private String password;
 
-    @Column(name = "Fullname")
+    @Column(name = "Fullname", nullable = false, length = 100)
     private String fullname;
 
-    @Column(name = "Email")
+    @Column(name = "Email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name = "IsAdmin")
-    private Boolean isAdmin;
+    @Column(name = "IsAdmin", nullable = false)
+    private Boolean isAdmin = false;
 
-    @Column(name = "Activated")
-    private Boolean activated;
+    @Column(name = "Activated", nullable = false)
+    private Boolean activated = true;
 
-    // ===== Getter & Setter =====
+    // ===== CONSTRUCTOR =====
+    public User() {}
+
+    public User(Integer userId, String username, String password, String fullname,
+                String email, Boolean isAdmin, Boolean activated) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.fullname = fullname;
+        this.email = email;
+        this.isAdmin = isAdmin;
+        this.activated = activated;
+    }
+
+    // ===== GETTER & SETTER =====
     public Integer getUserId() {
         return userId;
     }

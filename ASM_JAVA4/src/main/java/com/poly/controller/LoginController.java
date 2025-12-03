@@ -1,12 +1,13 @@
 package com.poly.controller;
 
+import java.io.IOException;
+
 import com.poly.model.User;
 import com.poly.service.UserService;
 
-import jakarta.servlet.*;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
@@ -16,6 +17,13 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
+        // Nếu đã đăng nhập → quay về trang chủ
+        if (req.getSession().getAttribute("user") != null) {
+            resp.sendRedirect("index");
+            return;
+        }
+
         req.getRequestDispatcher("/login.jsp").forward(req, resp);
     }
 
@@ -35,7 +43,18 @@ public class LoginController extends HttpServlet {
         }
 
         // Đăng nhập thành công
-        req.getSession().setAttribute("user", user);
+        HttpSession session = req.getSession();
+        session.setAttribute("user", user);
+
+        // Nếu có trang bảo mật cần quay lại
+        String backUri = (String) session.getAttribute("security-uri");
+        if (backUri != null) {
+            session.removeAttribute("security-uri"); 
+            resp.sendRedirect(backUri);
+            return;
+        }
+
+        // Không có trang nào → về index
         resp.sendRedirect("index");
     }
 }
