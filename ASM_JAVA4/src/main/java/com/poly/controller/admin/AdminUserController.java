@@ -20,17 +20,21 @@ public class AdminUserController extends HttpServlet {
             throws ServletException, IOException {
 
         String action = req.getParameter("action");
-        String id = req.getParameter("id");
+        String idStr  = req.getParameter("id");
 
-        // ===== LOAD 1 USER ĐỂ SỬA =====
-        if ("edit".equals(action) && id != null) {
-            User user = service.findById(Integer.valueOf(id));
-            req.setAttribute("user", user);
+        // ==== MẶC ĐỊNH: FORM TRỐNG ====
+        User editUser = null;
+
+        // ==== CHỈ LOAD KHI EDIT ====
+        if ("edit".equals(action) && idStr != null) {
+            editUser = service.findById(Integer.valueOf(idStr));
         }
 
-        // ===== LOAD DANH SÁCH USER =====
-        List<User> list = service.findAll();
-        req.setAttribute("list", list);
+        // GỬI SANG JSP bằng tên KHÔNG TRÙNG session
+        req.setAttribute("editUser", editUser);
+
+        // Load danh sách
+        req.setAttribute("list", service.findAll());
 
         req.getRequestDispatcher("/admin/users.jsp").forward(req, resp);
     }
@@ -41,51 +45,51 @@ public class AdminUserController extends HttpServlet {
 
         req.setCharacterEncoding("UTF-8");
 
-        String action = req.getParameter("action");
-        String idStr = req.getParameter("id");
+        String action   = req.getParameter("action");
+        String idStr    = req.getParameter("id");
 
-        // Dữ liệu form
         String fullname = req.getParameter("fullname");
-        String email = req.getParameter("email");
-        String username = req.getParameter("username");   // ★ THÊM QUAN TRỌNG
+        String email    = req.getParameter("email");
+        String username = req.getParameter("username");
         String password = req.getParameter("password");
-        String role = req.getParameter("role");
-        String active = req.getParameter("active");
+        String role     = req.getParameter("role");
+        String active   = req.getParameter("active");
 
-        // ===== CREATE USER =====
+        // CREATE
         if ("create".equals(action)) {
             User u = new User();
-            u.setUsername(username);         // ★ BẮT BUỘC
+            u.setUsername(username);
             u.setFullname(fullname);
             u.setEmail(email);
             u.setPassword(password);
-            u.setIsAdmin("admin".equals(role));
-            u.setActivated("active".equals(active));
+            u.setIsAdmin(role.equals("admin"));
+            u.setActivated(active.equals("active"));
 
             service.create(u);
         }
 
-        // ===== UPDATE USER =====
+        // UPDATE
         if ("update".equals(action)) {
             Integer id = Integer.valueOf(idStr);
             User u = service.findById(id);
 
             if (u != null) {
-                u.setUsername(username);     // ★ BẮT BUỘC
                 u.setFullname(fullname);
                 u.setEmail(email);
-                u.setPassword(password);
-                u.setIsAdmin("admin".equals(role));
-                u.setActivated("active".equals(active));
 
+                if (password != null && !password.isBlank()) {
+                    u.setPassword(password);
+                }
+
+                u.setIsAdmin(role.equals("admin"));
+                u.setActivated(active.equals("active"));
                 service.update(u);
             }
         }
 
-        // ===== DELETE USER =====
+        // DELETE
         if ("delete".equals(action)) {
-            Integer id = Integer.valueOf(idStr);
-            service.delete(id);
+            service.delete(Integer.valueOf(idStr));
         }
 
         resp.sendRedirect("users");

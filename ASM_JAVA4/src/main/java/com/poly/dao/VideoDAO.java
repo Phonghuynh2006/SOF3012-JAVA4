@@ -7,6 +7,7 @@ import com.poly.util.JpaUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.EntityTransaction;
 
 public class VideoDAO extends AbstractDAO<Video> {
 
@@ -90,9 +91,39 @@ public class VideoDAO extends AbstractDAO<Video> {
             em.close();
         }
     }
-    
-    public void deleteById(Integer id) {
-        super.delete(id);
+
+ // ================= DELETE VIDEO (CHO PHÉP XÓA DÙ CÓ YÊU THÍCH) =================
+    public void delete(Integer id) {
+        EntityManager em = JpaUtil.getEntityManager();
+        EntityTransaction tran = em.getTransaction();
+
+        try {
+            tran.begin();
+
+            // 1) Xóa bảng Favorites trước (tránh lỗi FK)
+            em.createQuery("DELETE FROM Favorite f WHERE f.video.id = :vid")
+              .setParameter("vid", id)
+              .executeUpdate();
+
+            // 2) Xóa bảng Shares nếu có
+            em.createQuery("DELETE FROM Share s WHERE s.video.id = :vid")
+              .setParameter("vid", id)
+              .executeUpdate();
+
+            // 3) Cuối cùng xóa Video
+            Video v = em.find(Video.class, id);
+            if (v != null) {
+                em.remove(em.contains(v) ? v : em.merge(v));
+            }
+
+            tran.commit();
+        } catch (Exception e) {
+            tran.rollback();
+            e.printStackTrace();
+            throw e;
+        } finally {
+            em.close();
+        }
     }
 
 

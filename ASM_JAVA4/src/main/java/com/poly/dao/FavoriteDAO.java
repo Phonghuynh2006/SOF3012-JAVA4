@@ -70,5 +70,28 @@ public class FavoriteDAO extends AbstractDAO<Favorite> {
         }
     }
     
+ // XÓA TẤT CẢ FAVORITE THEO VIDEO
+    public void deleteByVideo(Integer videoId) {
+        EntityManager em = JpaUtil.getEntityManager();
+        EntityTransaction tran = em.getTransaction();
+
+        try {
+            tran.begin();
+
+            em.createQuery("DELETE FROM Favorite f WHERE f.video.id = :vid")
+              .setParameter("vid", videoId)
+              .executeUpdate();
+
+            tran.commit();
+        } catch (Exception e) {
+            tran.rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+
+
+    
     
 }

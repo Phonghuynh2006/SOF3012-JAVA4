@@ -38,9 +38,11 @@
             <!-- LIKE / UNLIKE -->
             <c:choose>
                 <c:when test="${isFavorite}">
-                    <a href="favorite?action=unlike&videoId=${video.id}" class="btn" style="background:#e60a15;">
-                        💔 Bỏ thích
-                    </a>
+
+                    <a href="favorite?action=unlike&videoId=${video.id}&from=detail" class="btn">
+					    ❌ Bỏ thích
+					</a>
+                    
                 </c:when>
 
                 <c:otherwise>
@@ -63,6 +65,7 @@
 
         <c:forEach var="v" items="${suggest}">
             <a href="detail?id=${v.id}" style="text-decoration:none; color:white;">
+            
                 <div class="suggest-item">
                     <div class="suggest-thumb"
                          style="background-image:url('${v.poster}');"></div>
@@ -72,6 +75,7 @@
                         <div class="suggest-meta">${v.views} lượt xem</div>
                     </div>
                 </div>
+                
             </a>
         </c:forEach>
     </div>

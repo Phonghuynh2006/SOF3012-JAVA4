@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import com.poly.dao.ReportDAO;
+import com.poly.dao.VideoDAO;
 import com.poly.model.Favorite;
-import com.poly.model.Share;
+import com.poly.model.Video;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,41 +16,51 @@ import jakarta.servlet.http.*;
 public class AdminReportController extends HttpServlet {
 
     private ReportDAO reportDao = new ReportDAO();
+    private VideoDAO videoDao = new VideoDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String action = req.getParameter("action");
+        String type = req.getParameter("type");
         String videoId = req.getParameter("videoId");
 
-        // ======= REPORT 1: THỐNG KÊ VIDEO YÊU THÍCH =======
-        if ("favorite-stats".equals(action)) {
-            List<Object[]> stats = reportDao.getFavoriteStats();
-            req.setAttribute("stats", stats);
-            req.getRequestDispatcher("/admin/report-favorite.jsp").forward(req, resp);
+        /* ===============================
+           TAB 1: SUMMARY (Thống kê tổng)
+        =================================*/
+        if (type == null || type.equals("summary")) {
+
+            List<Object[]> summary = reportDao.getFavoriteStats();
+            req.setAttribute("summary", summary);
+
+            req.getRequestDispatcher("/admin/reports.jsp").forward(req, resp);
             return;
         }
 
-        // ======= REPORT 2: DANH SÁCH NGƯỜI YÊU THÍCH THEO VIDEO =======
-        if ("favorite-users".equals(action) && videoId != null) {
-            int vid = Integer.parseInt(videoId);
-            List<Favorite> list = reportDao.getUsersByVideo(vid);
-            req.setAttribute("list", list);
-            req.getRequestDispatcher("/admin/report-favorite-users.jsp").forward(req, resp);
+        /* ===============================
+           TAB 2: DETAIL (Người dùng thích)
+        =================================*/
+        if (type.equals("detail")) {
+
+            List<Video> videos = videoDao.findAll();
+            req.setAttribute("videos", videos);
+
+            // Nếu chưa chọn video → chọn video đầu tiên
+            if (videoId == null && !videos.isEmpty()) {
+                videoId = String.valueOf(videos.get(0).getId());
+            }
+
+            if (videoId != null) {
+                int vid = Integer.parseInt(videoId);
+                List<Favorite> detail = reportDao.getUsersByVideo(vid);
+                req.setAttribute("detail", detail);
+            }
+
+            req.getRequestDispatcher("/admin/reports.jsp").forward(req, resp);
             return;
         }
 
-        // ======= REPORT 3: DANH SÁCH SHARE THEO VIDEO =======
-        if ("shares".equals(action) && videoId != null) {
-            int vid = Integer.parseInt(videoId);
-            List<Share> list = reportDao.getSharesByVideo(vid);
-            req.setAttribute("list", list);
-            req.getRequestDispatcher("/admin/report-share.jsp").forward(req, resp);
-            return;
-        }
-
-        // ======= MẶC ĐỊNH → TRANG REPORT MAIN =======
+        // fallback
         req.getRequestDispatcher("/admin/reports.jsp").forward(req, resp);
     }
 }

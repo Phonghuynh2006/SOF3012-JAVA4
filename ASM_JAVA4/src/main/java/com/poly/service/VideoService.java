@@ -3,11 +3,13 @@ package com.poly.service;
 import java.util.List;
 
 import com.poly.dao.VideoDAO;
+import com.poly.dao.FavoriteDAO;
 import com.poly.model.Video;
 
 public class VideoService {
 
     private VideoDAO dao = new VideoDAO();
+    private FavoriteDAO favoriteDao = new FavoriteDAO();
 
     public List<Video> findAll() {
         return dao.findAll();
@@ -45,7 +47,6 @@ public class VideoService {
 
         Integer views = video.getViews();
         if (views == null) views = 0;
-
         video.setViews(views + 1);
         dao.update(video);
     }
@@ -62,7 +63,18 @@ public class VideoService {
         return dao.update(video);
     }
 
+    // ================= XOÁ VIDEO + FAVORITE LIÊN QUAN =================
+    public void deleteVideoAndFavorites(Integer videoId) {
+
+        // 1. Xóa hết Favorite của video
+        favoriteDao.deleteByVideo(videoId);
+
+        // 2. Xóa video
+        dao.delete(videoId);
+    }
+
+    @Deprecated
     public void delete(Integer id) {
-        dao.delete(id); // ✔ sửa lỗi
+        deleteVideoAndFavorites(id);
     }
 }

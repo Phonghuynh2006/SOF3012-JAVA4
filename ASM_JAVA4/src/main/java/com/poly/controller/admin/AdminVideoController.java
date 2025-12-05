@@ -20,22 +20,38 @@ public class AdminVideoController extends HttpServlet {
             throws ServletException, IOException {
 
         String action = req.getParameter("action");
-        String idStr = req.getParameter("id");
+        String idStr  = req.getParameter("id");
 
-        // ===== LOAD 1 VIDEO ĐỂ SỬA =====
+        // ====================== DELETE (SweetAlert gửi GET) ======================
+        if ("delete".equals(action) && idStr != null) {
+            try {
+                Integer id = Integer.valueOf(idStr);
+
+                // Xóa favorite trước rồi xóa video
+                service.deleteVideoAndFavorites(id);
+
+            } catch (Exception e) {
+                e.printStackTrace(); // xem log trong console Tomcat
+            }
+
+            resp.sendRedirect("videos");
+            return; // DỪNG doGet sau khi xoá
+        }
+
+        // ====================== EDIT: load 1 video lên form ======================
         if ("edit".equals(action) && idStr != null) {
             try {
                 Integer id = Integer.valueOf(idStr);
                 Video v = service.findById(id);
                 req.setAttribute("video", v);
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 resp.sendRedirect("videos");
                 return;
             }
         }
 
-        // ===== LOAD DANH SÁCH VIDEO =====
-        List<Video> list = service.findAll(); // dùng findAll thay vì getAllVideos
+        // ====================== LOAD DANH SÁCH VIDEO ============================
+        List<Video> list = service.findAll();
         req.setAttribute("list", list);
 
         req.getRequestDispatcher("/admin/videos.jsp").forward(req, resp);
@@ -47,14 +63,14 @@ public class AdminVideoController extends HttpServlet {
 
         req.setCharacterEncoding("UTF-8");
 
-        String action = req.getParameter("action");
-        String title = req.getParameter("title");
+        String action      = req.getParameter("action");
+        String title       = req.getParameter("title");
         String description = req.getParameter("description");
-        String poster = req.getParameter("poster");
-        String youtubeId = req.getParameter("youtubeId");
-        String idStr = req.getParameter("id");
+        String poster      = req.getParameter("poster");
+        String youtubeId   = req.getParameter("youtubeId");
+        String idStr       = req.getParameter("id");
 
-        // ===== CREATE =====
+        // ====================== CREATE =========================================
         if ("create".equals(action)) {
             Video v = new Video();
             v.setTitle(title);
@@ -64,7 +80,7 @@ public class AdminVideoController extends HttpServlet {
             service.create(v);
         }
 
-        // ===== UPDATE =====
+        // ====================== UPDATE =========================================
         if ("update".equals(action) && idStr != null) {
             try {
                 Integer id = Integer.valueOf(idStr);
@@ -77,21 +93,13 @@ public class AdminVideoController extends HttpServlet {
                     v.setYoutubeId(youtubeId);
                     service.update(v);
                 }
-            } catch (NumberFormatException e) {
-                // ignore hoặc log nếu muốn
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
-        // ===== DELETE =====
-        if ("delete".equals(action) && idStr != null) {
-            try {
-                Integer id = Integer.valueOf(idStr);
-                service.delete(id);
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-        }
-
+        // ❌ KHÔNG xử lý delete trong POST nữa
         resp.sendRedirect("videos");
     }
 }

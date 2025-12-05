@@ -36,9 +36,11 @@ public class AdminDashboardController extends HttpServlet {
         int totalUsers = userService.findAll().size();
         int totalFavorites = favoriteService.findAll().size();
 
-        // ======= 5 VIDEO MỚI NHẤT (sắp theo ID giảm dần) =======
-        allVideos.sort((v1, v2) -> v2.getId().compareTo(v1.getId())); // sort DESC
-        List<Video> latestVideos = allVideos.subList(0, Math.min(5, allVideos.size()));
+        // ======= SẮP XẾP VIDEO MỚI NHẤT =======
+        allVideos.sort((v1, v2) -> v2.getId().compareTo(v1.getId()));
+
+        // ======= GỬI TẤT CẢ VIDEO CHO DATATABLES =======
+        List<Video> latestVideos = allVideos;
 
         // ======= TRUYỀN DỮ LIỆU SANG VIEW =======
         req.setAttribute("totalVideos", totalVideos);
