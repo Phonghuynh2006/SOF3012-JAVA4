@@ -35,7 +35,6 @@ public class AdminUserController extends HttpServlet {
         req.getRequestDispatcher("/admin/users.jsp").forward(req, resp);
     }
 
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -45,39 +44,45 @@ public class AdminUserController extends HttpServlet {
         String action = req.getParameter("action");
         String idStr = req.getParameter("id");
 
-        // dữ liệu form
+        // Dữ liệu form
         String fullname = req.getParameter("fullname");
         String email = req.getParameter("email");
+        String username = req.getParameter("username");   // ★ THÊM QUAN TRỌNG
         String password = req.getParameter("password");
         String role = req.getParameter("role");
         String active = req.getParameter("active");
 
-        // Tạo mới user
+        // ===== CREATE USER =====
         if ("create".equals(action)) {
             User u = new User();
+            u.setUsername(username);         // ★ BẮT BUỘC
             u.setFullname(fullname);
             u.setEmail(email);
             u.setPassword(password);
             u.setIsAdmin("admin".equals(role));
             u.setActivated("active".equals(active));
+
             service.create(u);
         }
 
-        // Cập nhật user
+        // ===== UPDATE USER =====
         if ("update".equals(action)) {
             Integer id = Integer.valueOf(idStr);
             User u = service.findById(id);
 
-            u.setFullname(fullname);
-            u.setEmail(email);
-            u.setPassword(password);
-            u.setIsAdmin("admin".equals(role));
-            u.setActivated("active".equals(active));
+            if (u != null) {
+                u.setUsername(username);     // ★ BẮT BUỘC
+                u.setFullname(fullname);
+                u.setEmail(email);
+                u.setPassword(password);
+                u.setIsAdmin("admin".equals(role));
+                u.setActivated("active".equals(active));
 
-            service.update(u);
+                service.update(u);
+            }
         }
 
-        // Xóa user
+        // ===== DELETE USER =====
         if ("delete".equals(action)) {
             Integer id = Integer.valueOf(idStr);
             service.delete(id);

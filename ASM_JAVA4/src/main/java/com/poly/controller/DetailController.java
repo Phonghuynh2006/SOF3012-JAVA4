@@ -3,7 +3,9 @@ package com.poly.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.poly.model.User;
 import com.poly.model.Video;
+import com.poly.service.FavoriteService;
 import com.poly.service.VideoService;
 
 import jakarta.servlet.ServletException;
@@ -13,7 +15,8 @@ import jakarta.servlet.http.*;
 @WebServlet("/detail")
 public class DetailController extends HttpServlet {
 
-    private VideoService service = new VideoService();
+    private VideoService videoService = new VideoService();
+    private FavoriteService favoriteService = new FavoriteService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -28,24 +31,35 @@ public class DetailController extends HttpServlet {
         }
 
         // Lấy video
-        Video video = service.findById(id);
+        Video video = videoService.findById(id);
         if (video == null) {
             resp.sendRedirect("index");
             return;
         }
 
         // Tăng lượt xem
-        service.increaseView(video);
+        videoService.increaseView(video);
 
-        // Ghi vào cookie "recent videos"
+        // Lưu history xem video bằng cookie
         saveRecentVideo(req, resp, id);
 
-        // Lấy video gợi ý (trừ video hiện tại)
-        List<Video> suggest = service.getSuggest(id);
+        // Lấy video đề xuất
+        List<Video> suggest = videoService.getSuggest(id);
+
+        // KIỂM TRA LIKE / UNLIKE
+        boolean isFavorite = false;
+
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user != null) {
+            isFavorite = favoriteService.isFavorite(user.getUserId(), video.getId());
+        }
 
         // Truyền data
         req.setAttribute("video", video);
         req.setAttribute("suggest", suggest);
+        req.setAttribute("isFavorite", isFavorite);   // Gửi trạng thái LIKE vào JSP
 
         req.getRequestDispatcher("/detail.jsp").forward(req, resp);
     }
@@ -59,26 +73,22 @@ public class DetailController extends HttpServlet {
         if (cookies != null) {
             for (Cookie ck : cookies) {
                 if ("recent".equals(ck.getName())) {
-
-                    // Lấy giá trị cũ và lọc bỏ ký tự không hợp lệ (dấu phẩy, khoảng trắng)
                     String old = ck.getValue();
                     if (old != null) {
                         old = old.replace(",", "-").replace(" ", "");
                     }
 
-                    // Nếu đã có id trong chuỗi thì không thêm nữa, tránh trùng
                     if (old != null && !old.isEmpty()) {
-                        if (old.contains(id)) {
-                            list = old;          // đã có rồi
+                        if (!old.contains(id)) {
+                            list = old + "-" + id;
                         } else {
-                            list = old + "-" + id;  // nối bằng dấu '-'
+                            list = old;
                         }
                     }
                 }
             }
         }
 
-        // Giá trị cookie CHỈ gồm số và dấu '-' → hợp lệ với Tomcat
         Cookie recent = new Cookie("recent", list);
         recent.setMaxAge(60 * 60 * 24 * 7); // 7 ngày
         recent.setPath(req.getContextPath());

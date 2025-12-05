@@ -9,22 +9,22 @@ public class VideoService {
 
     private VideoDAO dao = new VideoDAO();
 
-    // ================= LẤY TẤT CẢ VIDEO =================
-    public List<Video> getAllVideos() {
+    public List<Video> findAll() {
         return dao.findAll();
     }
 
-    // ================= LẤY VIDEO ACTIVE =================
     public List<Video> getActiveVideos() {
         return dao.findActive();
     }
 
-    // ================= TÌM THEO ID (STRING) =================
+    public Video findById(Integer id) {
+        return dao.findById(id.toString());
+    }
+
     public Video findById(String id) {
         return dao.findById(id);
     }
 
-    // ================= TÌM KIẾM THEO TÊN =================
     public List<Video> search(String keyword) {
         if (keyword == null || keyword.isBlank()) {
             return getActiveVideos();
@@ -32,7 +32,6 @@ public class VideoService {
         return dao.findByKeyword(keyword);
     }
 
-    // ================= PHÂN TRANG (TRANG CHỦ) =================
     public List<Video> getPage(int page, int size) {
         return dao.findPage(page, size);
     }
@@ -41,7 +40,6 @@ public class VideoService {
         return dao.count();
     }
 
-    // ================= TĂNG LƯỢT XEM =================
     public void increaseView(Video video) {
         if (video == null) return;
 
@@ -52,37 +50,19 @@ public class VideoService {
         dao.update(video);
     }
 
-    // ================= VIDEO GỢI Ý =================
     public List<Video> getSuggest(String videoId) {
         return dao.findSuggest(videoId);
     }
-    
 
+    public Video create(Video video) {
+        return dao.create(video);
+    }
 
-        // Lấy tất cả video
-        public List<Video> findAll() {
-            return dao.findAll();
-        }
+    public Video update(Video video) {
+        return dao.update(video);
+    }
 
-        // Lấy video theo ID
-        public Video findById(Integer id) {
-            return dao.findById(id.toString());
-        }
-
-        // Tạo mới video
-        public Video create(Video video) {
-            return dao.create(video);
-        }
-
-        // Cập nhật video
-        public Video update(Video video) {
-            return dao.update(video);
-        }
-
-        // Xóa video
-        public void delete(Integer id) {
-            dao.delete(id.toString());
-        }
-    
-
+    public void delete(Integer id) {
+        dao.delete(id); // ✔ sửa lỗi
+    }
 }

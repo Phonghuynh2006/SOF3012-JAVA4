@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<link rel="stylesheet" href="layout/sidebar.css">
 <aside class="sidebar">
 
     <!-- LOGO -->
@@ -10,53 +11,50 @@
         <h1 class="sidebar-logo-title">ASM</h1>
     </div>
 
-
-    <!-- MENU CHÍNH -->
+    <!-- MENU -->
     <div class="sidebar-menu">
 
-        <!-- Dashboard -->
-        <a href="index">
+        <!-- DASHBOARD -->
+        <a class="${page == 'dashboard' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/admin/index">
             <span class="material-symbols-outlined">dashboard</span>
             <span>Bảng điều khiển</span>
         </a>
-    <!--
- 
-        <a href="report-favorites">
+
+        <!-- REPORT -->
+        <a class="${page == 'report' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/admin/reports?type=summary">
             <span class="material-symbols-outlined">bar_chart</span>
-            <span>Báo cáo Yêu thích</span>
+            <span>Báo cáo</span>
         </a>
 
-        <a href="report-favorite-users">
-            <span class="material-symbols-outlined">bar_chart</span>
-            <span>Người dùng yêu thích</span>
-        </a>
-
-        <a href="report-shares">
-            <span class="material-symbols-outlined">bar_chart</span>
-            <span>Báo cáo Chia sẻ</span>
-        </a>
--->
-        <!-- QUẢN LÝ PHIM -->
-        <a href="videos">
+        <!-- VIDEOS -->
+        <a class="${page == 'videos' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/admin/videos">
             <span class="material-symbols-outlined">theaters</span>
             <span>Quản lý Phim</span>
         </a>
 
-        <!-- QUẢN LÝ USER -->
-        <a href="users">
+        <!-- USERS -->
+        <a class="${page == 'users' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/admin/users">
             <span class="material-symbols-outlined">group</span>
             <span>Quản lý Người dùng</span>
         </a>
 
     </div>
 
-
-    <!-- ADMIN -->
+    <!-- FOOTER -->
     <div class="sidebar-footer">
-        <a href="/ASM_JAVA4/" class="sidebar-logout">
-            <span>Quay lại</span>
+
+        <!-- QUAY LẠI USER -->
+        <a href="${pageContext.request.contextPath}/index" class="sidebar-logout">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span>Quay lại trang người dùng</span>
         </a>
-        <a href="../logout" class="sidebar-logout">
+
+        <!-- LOGOUT -->
+        <a href="${pageContext.request.contextPath}/logout" class="sidebar-logout">
             <span class="material-symbols-outlined">logout</span>
             <span>Đăng xuất</span>
         </a>

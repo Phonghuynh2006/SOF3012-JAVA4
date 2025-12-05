@@ -22,28 +22,25 @@ public class AdminDashboardController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // Lấy tất cả video
-        List<Video> allVideos = videoService.getAllVideos();
+        // ======= LẤY TOÀN BỘ VIDEO =======
+        List<Video> allVideos = videoService.findAll();
         int totalVideos = allVideos.size();
 
-        long totalViews = 0;
-        for (Video v : allVideos) {
-            if (v.getViews() != null) {
-                totalViews += v.getViews();
-            }
-        }
+        // ======= TỔNG LƯỢT XEM =======
+        long totalViews = allVideos.stream()
+                .filter(v -> v.getViews() != null)
+                .mapToLong(Video::getViews)
+                .sum();
 
-        // Lấy tổng users & favorites
+        // ======= TỔNG USERS & FAVORITES =======
         int totalUsers = userService.findAll().size();
         int totalFavorites = favoriteService.findAll().size();
 
-        // Lấy 5 video mới nhất
-        List<Video> latestVideos = allVideos;
-        if (allVideos.size() > 5) {
-            latestVideos = allVideos.subList(0, 5);
-        }
+        // ======= 5 VIDEO MỚI NHẤT (sắp theo ID giảm dần) =======
+        allVideos.sort((v1, v2) -> v2.getId().compareTo(v1.getId())); // sort DESC
+        List<Video> latestVideos = allVideos.subList(0, Math.min(5, allVideos.size()));
 
-        // Gửi dữ liệu xuống view
+        // ======= TRUYỀN DỮ LIỆU SANG VIEW =======
         req.setAttribute("totalVideos", totalVideos);
         req.setAttribute("totalUsers", totalUsers);
         req.setAttribute("totalViews", totalViews);

@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <link rel="stylesheet" href="${pageContext.request.contextPath}/layout/header.css">
+<link rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <header>
     <div class="logo-area">
@@ -21,7 +24,7 @@
         </c:choose>
 
         <!-- Admin -->
-        <c:if test="${sessionScope.user.isAdmin}">
+        <c:if test="${not empty sessionScope.user and sessionScope.user.isAdmin}">
             <a href="admin/index">Quản trị</a>
         </c:if>
     </nav>
@@ -37,11 +40,13 @@
         <div class="icon-btn"><i class="fa-solid fa-bell"></i></div>
 
         <!-- Nếu chưa login -->
+        
         <c:if test="${empty sessionScope.user}">
-            <a href="login">
-                <div class="avatar" style="background-image:url('https://i.pravatar.cc/60');"></div>
-            </a>
-        </c:if>
+		    <a href="login">
+		        <i class="fa-regular fa-user" style="font-size:22px; color:white;"></i>
+		    </a>
+		</c:if>
+        
 
         <!-- Nếu đã login -->
         <c:if test="${not empty sessionScope.user}">

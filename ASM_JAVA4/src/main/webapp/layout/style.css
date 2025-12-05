@@ -65,10 +65,16 @@ section h2 {
 
 /* PAGINATION */
 .pagination {
+    list-style: none !important;
     display: flex;
     justify-content: center;
     margin-top: 40px;
     gap: 5px;
+    padding: 0;
+}
+
+.pagination li {
+    list-style: none !important;
 }
 
 .pagination a {
@@ -87,4 +93,6 @@ section h2 {
     background: #e60a15;
     color: white;
 }
+
+
 

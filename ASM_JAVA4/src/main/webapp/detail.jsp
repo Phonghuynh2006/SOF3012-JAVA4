@@ -8,22 +8,17 @@
 <meta charset="UTF-8">
 <title>${video.title}</title>
 
-<!-- CSS tổng -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/layout/style.css">
-
-<!-- CSS riêng trang chi tiết -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/layout/detail.css">
 
 </head>
 <body>
 
-<!-- HEADER DÙNG FILE CHUNG -->
 <jsp:include page="header.jsp"/>
 
-
-<!-- ================= MAIN WRAPPER (BẮT BUỘC CÓ) ================= -->
 <div class="container">
-    <!-- ===== VIDEO AREA ===== -->
+
+    <!-- VIDEO CHÍNH -->
     <div class="video-area">
 
         <div class="video-box">
@@ -37,17 +32,32 @@
 
         <p class="description">${video.description}</p>
 
+        <!-- ACTION BUTTONS -->
         <div class="action-buttons">
-            <a href="like?id=${video.id}" class="btn">👍 Thích</a>
 
+            <!-- LIKE / UNLIKE -->
+            <c:choose>
+                <c:when test="${isFavorite}">
+                    <a href="favorite?action=unlike&videoId=${video.id}" class="btn" style="background:#e60a15;">
+                        💔 Bỏ thích
+                    </a>
+                </c:when>
+
+                <c:otherwise>
+                    <a href="favorite?action=like&videoId=${video.id}" class="btn">
+                        👍 Thích
+                    </a>
+                </c:otherwise>
+            </c:choose>
+
+            <!-- SHARE -->
             <a href="share?id=${video.id}" class="btn">📤 Chia sẻ</a>
 
-            <a href="favorite?id=${video.id}" class="btn">➕ Thêm vào danh sách</a>
         </div>
+
     </div>
 
-
-    <!-- ===== SIDEBAR ===== -->
+    <!-- SIDEBAR ĐỀ XUẤT -->
     <div class="sidebar">
         <h2>Đề xuất cho bạn</h2>
 
@@ -64,12 +74,10 @@
                 </div>
             </a>
         </c:forEach>
-
     </div>
 
-</div> <!-- END .container -->
+</div>
 
-<!-- FOOTER DÙNG FILE CHUNG -->
 <jsp:include page="footer.jsp"/>
 
 </body>

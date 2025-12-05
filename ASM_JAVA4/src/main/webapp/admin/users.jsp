@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -10,10 +11,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
-    <link rel="stylesheet" href="layout/adminsytle.css">
+    <!-- Fix đúng đường dẫn CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/layout/adminstyle.css">
 </head>
 
 <body>
+
+<c:set var="page" value="users" />
 
 <div class="admin-layout">
 
@@ -36,7 +40,7 @@
 
                     <form class="user-form" method="post" action="users">
 
-                        <input type="hidden" name="id" value="${user.userId}"/>
+                        <input type="hidden" name="id" value="${user.userId}" />
 
                         <div class="form-row">
                             <label>Họ và Tên</label>
@@ -59,23 +63,23 @@
                         <div class="form-row">
                             <label>Vai trò</label>
                             <select name="role" class="form-input">
-                                <option value="user" ${!user.isAdmin ? "selected" : ""}>User</option>
-                                <option value="admin" ${user.isAdmin ? "selected" : ""}>Admin</option>
+                                <option value="user" ${user != null && !user.isAdmin ? "selected" : ""}>User</option>
+                                <option value="admin" ${user != null && user.isAdmin ? "selected" : ""}>Admin</option>
                             </select>
                         </div>
 
                         <div class="form-row">
                             <label>Trạng thái</label>
                             <select name="active" class="form-input">
-                                <option value="active" ${user.activated ? "selected" : ""}>Active</option>
-                                <option value="disabled" ${!user.activated ? "selected" : ""}>Disabled</option>
+                                <option value="active" ${user != null && user.activated ? "selected" : ""}>Active</option>
+                                <option value="disabled" ${user != null && !user.activated ? "selected" : ""}>Disabled</option>
                             </select>
                         </div>
 
                         <button class="primary-btn" type="submit" name="action"
-                                value="${user != null ? 'update' : 'create'}">
+                                value="${user == null ? 'create' : 'update'}">
                             <span class="material-symbols-outlined">save</span>
-                            <span>${user != null ? "Cập nhật" : "Thêm người dùng"}</span>
+                            <span>${user == null ? "Thêm người dùng" : "Cập nhật"}</span>
                         </button>
 
                     </form>
@@ -90,13 +94,13 @@
                     <table class="admin-table">
 
                         <thead>
-                        <tr>
-                            <th>Người dùng</th>
-                            <th>Vai trò</th>
-                            <th>Email</th>
-                            <th>Trạng thái</th>
-                            <th>Hành động</th>
-                        </tr>
+                            <tr>
+                                <th>Người dùng</th>
+                                <th>Vai trò</th>
+                                <th>Email</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
                         </thead>
 
                         <tbody>
@@ -104,7 +108,7 @@
                         <c:forEach var="u" items="${list}">
                             <tr>
 
-                                <!-- User info -->
+                                <!-- User Card -->
                                 <td>
                                     <div class="user-cell">
                                         <div class="user-avatar"
@@ -137,7 +141,6 @@
                                 <!-- ACTIONS -->
                                 <td>
                                     <div class="action-buttons">
-
                                         <a class="icon-btn"
                                            href="users?action=edit&id=${u.userId}">
                                             <span class="material-symbols-outlined">edit</span>
@@ -145,10 +148,9 @@
 
                                         <a class="icon-btn delete"
                                            href="users?action=delete&id=${u.userId}"
-                                           onclick="return confirm('Bạn chắc muốn xóa?');">
+                                           onclick="return confirm('Bạn chắc muốn xóa người dùng này?');">
                                             <span class="material-symbols-outlined">delete</span>
                                         </a>
-
                                     </div>
                                 </td>
 
@@ -156,10 +158,15 @@
                         </c:forEach>
 
                         <c:if test="${empty list}">
-                            <tr><td colspan="5" style="text-align:center; padding:16px;">Chưa có người dùng.</td></tr>
+                            <tr>
+                                <td colspan="5" style="text-align:center; padding:16px;">
+                                    Chưa có người dùng.
+                                </td>
+                            </tr>
                         </c:if>
 
                         </tbody>
+
                     </table>
 
                 </div>

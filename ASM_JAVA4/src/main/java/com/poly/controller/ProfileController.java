@@ -54,7 +54,7 @@ public class ProfileController extends HttpServlet {
         }
 
         try {
-            // Cập nhật database
+            // Cập nhật databases
             userService.updateProfile(user.getUserId(), fullname);
 
 

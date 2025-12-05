@@ -24,18 +24,22 @@ public class AdminVideoController extends HttpServlet {
 
         // ===== LOAD 1 VIDEO ĐỂ SỬA =====
         if ("edit".equals(action) && idStr != null) {
-            Integer id = Integer.valueOf(idStr);
-            Video v = service.findById(id);
-            req.setAttribute("video", v);
+            try {
+                Integer id = Integer.valueOf(idStr);
+                Video v = service.findById(id);
+                req.setAttribute("video", v);
+            } catch (NumberFormatException e) {
+                resp.sendRedirect("videos");
+                return;
+            }
         }
 
         // ===== LOAD DANH SÁCH VIDEO =====
-        List<Video> list = service.getAllVideos();
+        List<Video> list = service.findAll(); // dùng findAll thay vì getAllVideos
         req.setAttribute("list", list);
 
         req.getRequestDispatcher("/admin/videos.jsp").forward(req, resp);
     }
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -44,12 +48,10 @@ public class AdminVideoController extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
 
         String action = req.getParameter("action");
-
         String title = req.getParameter("title");
         String description = req.getParameter("description");
         String poster = req.getParameter("poster");
         String youtubeId = req.getParameter("youtubeId");
-
         String idStr = req.getParameter("id");
 
         // ===== CREATE =====
@@ -59,29 +61,35 @@ public class AdminVideoController extends HttpServlet {
             v.setPoster(poster);
             v.setDescription(description);
             v.setYoutubeId(youtubeId);
-
             service.create(v);
         }
 
         // ===== UPDATE =====
         if ("update".equals(action) && idStr != null) {
-            Integer id = Integer.valueOf(idStr);
-            Video v = service.findById(id);
+            try {
+                Integer id = Integer.valueOf(idStr);
+                Video v = service.findById(id);
 
-            if (v != null) {
-                v.setTitle(title);
-                v.setPoster(poster);
-                v.setDescription(description);
-                v.setYoutubeId(youtubeId);
-
-                service.update(v);
+                if (v != null) {
+                    v.setTitle(title);
+                    v.setPoster(poster);
+                    v.setDescription(description);
+                    v.setYoutubeId(youtubeId);
+                    service.update(v);
+                }
+            } catch (NumberFormatException e) {
+                // ignore hoặc log nếu muốn
             }
         }
 
         // ===== DELETE =====
         if ("delete".equals(action) && idStr != null) {
-            Integer id = Integer.valueOf(idStr);
-            service.delete(id);
+            try {
+                Integer id = Integer.valueOf(idStr);
+                service.delete(id);
+            } catch (NumberFormatException e) {
+                // ignore
+            }
         }
 
         resp.sendRedirect("videos");

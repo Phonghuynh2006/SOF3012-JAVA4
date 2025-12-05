@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+         pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -11,15 +11,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
-    <link rel="stylesheet" href="layout/adminsytle.css">
+    <!-- FIX đường dẫn CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/layout/adminstyle.css">
 </head>
-<style> .video-form { padding: 20px; } .video-form .form-row { margin-bottom: 15px; display: flex; flex-direction: column; } .video-form label { font-weight: 600; margin-bottom: 5px; color: #1a3d7c; /* Xanh dương đậm */ } .form-input { padding: 10px 12px; background: #ffffff; /* Nền trắng */ border: 1px solid #1a73e8; /* Viền xanh dương */ border-radius: 8px; color: #1a3d7c; /* Chữ xanh dương đậm */ font-size: 15px; } .form-input:focus { border-color: #0b57d0; /* Xanh dương tươi */ box-shadow: 0 0 5px rgba(11, 87, 208, 0.4); } textarea.form-input { resize: vertical; } </style>
+
 <body>
+
+<c:set var="page" value="videos"/>
 
 <div class="admin-layout">
 
     <!-- SIDEBAR -->
-    <jsp:include page="sidebar.jsp"/>
+    <jsp:include page="sidebar.jsp" />
 
     <!-- MAIN -->
     <main class="admin-main">
@@ -32,102 +35,107 @@
             </jsp:include>
 
 
-            <!-- ======================= FORM THÊM / SỬA VIDEO ======================= -->
-            <div class="table-card" style="margin-bottom: 30px;">
+            <!-- FORM THÊM/SỬA VIDEO -->
+            <div class="table-card" style="margin-bottom:30px;">
                 <div class="table-wrapper">
 
-                    <form class="video-form" method="post" action="videos">
-                        <input type="hidden" name="id" value="${video.id}"/>
+                    <form class="admin-form" method="post" action="videos">
+
+                        <input type="hidden" name="id" value="${video.id}" />
 
                         <div class="form-row">
                             <label>Tên Video</label>
                             <input type="text" name="title" class="form-input"
-                                   value="${video.title}" placeholder="Nhập tên video..." required>
+                                   value="${video.title}" required>
                         </div>
 
                         <div class="form-row">
                             <label>Link Thumbnail</label>
                             <input type="text" name="poster" class="form-input"
-                                   value="${video.poster}" placeholder="Dán link thumbnail tại đây..." required>
+                                   value="${video.poster}" required>
                         </div>
 
                         <div class="form-row">
                             <label>Youtube ID</label>
                             <input type="text" name="youtubeId" class="form-input"
-                                   value="${video.youtubeId}" placeholder="VD: dQw4w9WgXcQ" required>
+                                   value="${video.youtubeId}" required>
                         </div>
 
                         <div class="form-row">
                             <label>Mô tả</label>
-                            <textarea name="description" class="form-input" rows="3"
-                                      placeholder="Nhập mô tả video...">${video.description}</textarea>
+                            <textarea name="description" class="form-input" rows="3">${video.description}</textarea>
                         </div>
 
                         <div class="form-row">
                             <button class="primary-btn" type="submit" name="action"
-                                    value="${empty video ? 'create' : 'update'}">
+                                    value="${video == null ? 'create' : 'update'}">
                                 <span class="material-symbols-outlined">save</span>
-                                <span>${empty video ? 'Thêm Video' : 'Cập nhật Video'}</span>
+                                <span>${video == null ? "Thêm Video" : "Cập nhật Video"}</span>
                             </button>
 
-                            <c:if test="${not empty video}">
-                                <a href="videos" class="primary-btn" style="background:#888;">
-                                    <span class="material-symbols-outlined">close</span> Hủy chỉnh sửa
+                            <c:if test="${video != null}">
+                                <a href="videos" class="primary-btn cancel-btn">
+                                    <span class="material-symbols-outlined">close</span>
+                                    Hủy chỉnh sửa
                                 </a>
                             </c:if>
                         </div>
+
                     </form>
 
                 </div>
             </div>
 
 
-            <!-- ======================= DANH SÁCH VIDEO ======================= -->
+            <!-- DANH SÁCH VIDEO -->
             <div class="table-card">
                 <div class="table-wrapper">
 
-                    <table class="video-table">
+                    <table class="admin-table">
                         <thead>
                         <tr>
-                            <th>Thumbnail</th>
-                            <th>Tên Video</th>
+                            <th>Poster</th>
+                            <th>Tiêu đề</th>
                             <th>Mô tả</th>
                             <th>Lượt xem</th>
                             <th>Trạng thái</th>
-                            <th>Hành Động</th>
+                            <th>Hành động</th>
                         </tr>
                         </thead>
 
                         <tbody>
+
                         <c:forEach var="v" items="${list}">
                             <tr>
+
+                                <!-- Thumbnail -->
                                 <td>
-                                    <img class="thumb-img" src="${v.poster}"
-                                         style="width:120px; border-radius:8px;">
+                                    <img src="${v.poster}" class="thumb-img">
                                 </td>
 
                                 <td>${v.title}</td>
-                                <td style="max-width:300px;">${v.description}</td>
+
+                                <td style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                    ${v.description}
+                                </td>
+
                                 <td>${v.views}</td>
 
                                 <td>
-                                    <span class="status-badge ${v.active ? 'status-public' : 'status-hidden'}">
-                                        <c:choose>
-                                            <c:when test="${v.active}">Công khai</c:when>
-                                            <c:otherwise>Ẩn</c:otherwise>
-                                        </c:choose>
+                                    <span class="badge ${v.active ? 'badge-green' : 'badge-red'}">
+                                        ${v.active ? "Công khai" : "Ẩn"}
                                     </span>
                                 </td>
 
                                 <td>
                                     <div class="action-buttons">
 
-                                        <!-- NÚT SỬA -->
+                                        <!-- EDIT -->
                                         <a class="icon-btn" href="videos?action=edit&id=${v.id}">
                                             <span class="material-symbols-outlined">edit</span>
                                         </a>
 
-                                        <!-- NÚT XÓA -->
+                                        <!-- DELETE -->
                                         <form method="post" action="videos" style="display:inline;">
                                             <input type="hidden" name="id" value="${v.id}">
                                             <button class="icon-btn delete" name="action" value="delete"
@@ -135,9 +143,9 @@
                                                 <span class="material-symbols-outlined">delete</span>
                                             </button>
                                         </form>
-
                                     </div>
                                 </td>
+
                             </tr>
                         </c:forEach>
 
@@ -155,11 +163,12 @@
                 </div>
             </div>
 
-            <!-- ===== FOOTER ===== -->
+            <!-- FOOTER -->
             <jsp:include page="footer.jsp"/>
 
         </div>
     </main>
+
 </div>
 
 </body>

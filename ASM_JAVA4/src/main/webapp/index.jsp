@@ -59,8 +59,9 @@
     </div>
 </section>
 
+
 <!-- ============== PHÂN TRANG ============== -->
-<c:if test="${not empty totalPages}">
+<c:if test="${not empty totalPage}">
 <div class="pagination">
     <ul class="pagination">
 
@@ -70,7 +71,7 @@
             </a>
         </li>
 
-        <c:forEach begin="1" end="${totalPages}" var="p">
+        <c:forEach begin="1" end="${totalPage}" var="p">
             <li class="page-item">
                 <a class="page-link ${p == page ? 'active' : ''}" 
                    href="index?page=${p}">
@@ -80,7 +81,7 @@
         </c:forEach>
 
         <li class="page-item">
-            <a class="page-link" href="index?page=${page+1 < totalPages ? page+1 : totalPages}">
+            <a class="page-link" href="index?page=${page+1 < totalPage ? page+1 : totalPage}">
                 &raquo;
             </a>
         </li>
@@ -88,6 +89,7 @@
     </ul>
 </div>
 </c:if>
+
 </div>
 <jsp:include page="footer.jsp" />
 

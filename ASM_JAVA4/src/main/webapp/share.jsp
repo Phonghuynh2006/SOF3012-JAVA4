@@ -14,12 +14,12 @@
 </head>
 <body>
 
-<!-- HEADER CHUNG -->
 <jsp:include page="header.jsp" />
 
 <main>
     <div class="share-wrapper">
         <div class="share-card">
+
             <h1 class="share-title">Chia sẻ phim qua Email</h1>
             <p class="share-subtitle">Gửi bộ phim này cho bạn bè của bạn.</p>
 
@@ -31,23 +31,21 @@
                 <div class="alert-error">${error}</div>
             </c:if>
 
-            <!-- ================= MOVIE PREVIEW ================= -->
+            <!-- MOVIE PREVIEW -->
             <c:if test="${not empty video}">
-            <div class="movie-preview">
-                <div class="movie-thumb"
-                     style="background-image:url('${pageContext.request.contextPath}/images/${video.poster}');">
+                <div class="movie-preview">
+                    <div class="movie-thumb"
+                         style="background-image:url('${video.poster}');"></div>
+
+                    <div>
+                        <h3>${video.title}</h3>
+                        <p>Lượt xem: ${video.views}</p>
+                    </div>
                 </div>
-                <div>
-                    <h3>${video.title}</h3>
-                    <p>Lượt xem: ${video.views}</p>
-                </div>
-            </div>
             </c:if>
 
-            <!-- ================= SHARE FORM ================= -->
             <form action="share" method="post">
 
-                <!-- Hidden video id -->
                 <input type="hidden" name="videoId" value="${video.id}" />
 
                 <label for="recipient-email">Email người nhận</label>
@@ -58,6 +56,7 @@
                            type="email"
                            class="share-input"
                            placeholder="Nhập địa chỉ email"
+                           value="${email}"
                            required>
                 </div>
 
@@ -65,13 +64,15 @@
                     <span>📨</span>
                     <span>Gửi</span>
                 </button>
+
+                <a href="detail?id=${video.id}" class="back-btn">← Quay lại</a>
+
             </form>
 
         </div>
     </div>
 </main>
 
-<!-- FOOTER CHUNG -->
 <jsp:include page="footer.jsp" />
 
 </body>

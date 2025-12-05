@@ -10,7 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
-    <link rel="stylesheet" href="layout/adminsytle.css">
+    <!-- ❗ Fix lỗi: ĐÚNG ĐƯỜNG DẪN + ĐÚNG TÊN FILE -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/layout/adminsytle.css">
+
 </head>
 <body>
 
@@ -54,7 +56,7 @@
 
             <!-- BẢNG PHIM MỚI -->
             <div class="table-card">
-                <h2 class="table-title">Phim Mới Được Tải Lên</h2>
+                <h2 class="table-title">Phim mới được tải lên</h2>
 
                 <div style="overflow-x:auto;">
                     <table class="admin-table">

@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/layout/footer.css">
-<footer>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/layout/footer.css">
+
+<footer class="page-footer">
+
     <div class="footer-grid">
         <div>
             <h3>PhimHay</h3>

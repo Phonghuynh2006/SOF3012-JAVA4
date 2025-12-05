@@ -31,33 +31,35 @@
         </p>
     </c:if>
 
-    <section class="favorites-grid">
+    <!-- ⭐⭐ CHUYỂN SECTION -> DIV để grid hoạt động tốt hơn ⭐⭐ -->
+    <div class="favorites-grid">
 
-<c:forEach var="fav" items="${list}">
-    <article class="favorite-card">
+        <c:forEach var="fav" items="${list}">
+            <div class="favorite-card">
 
-        <a href="detail?id=${fav.video.id}">
-            
-            <!-- KHÔNG LOAD ẢNH — NỀN ĐEN -->
-            <div class="poster" style="background-color:#000;"></div>
+                <a href="detail?id=${fav.video.id}">
+                    
+                    <!-- ẢNH VIDEO -->
+                    <div class="poster" 
+                         style="background-image:url('${fav.video.poster}');">
+                    </div>
 
-            <div class="movie-info">
-                <div class="movie-title">${fav.video.title}</div>
-                <div class="movie-genre">Lượt xem: ${fav.video.views}</div>
+                    <div class="movie-info">
+                        <div class="movie-title">${fav.video.title}</div>
+                        <div class="movie-genre">Lượt xem: ${fav.video.views}</div>
+                    </div>
+                </a>
+
+                <form action="favorite" method="post">
+                    <input type="hidden" name="videoId" value="${fav.video.id}">
+                    <input type="hidden" name="action" value="unlike">
+                    <button class="unlike-btn">🗑 Bỏ thích</button>
+                </form>
+
             </div>
-        </a>
+        </c:forEach>
 
-        <form action="favorite" method="post">
-            <input type="hidden" name="videoId" value="${fav.video.id}">
-            <button class="unlike-btn">🗑 Bỏ thích</button>
-        </form>
-
-    </article>
-</c:forEach>
-
-
-
-    </section>
+    </div> <!-- END GRID -->
 
 </main>
 

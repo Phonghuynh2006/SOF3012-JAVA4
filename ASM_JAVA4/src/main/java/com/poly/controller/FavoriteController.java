@@ -27,25 +27,18 @@ public class FavoriteController extends HttpServlet {
             return;
         }
 
-        // Khi bấm Thêm vào danh sách (?id=4)
         String idParam = req.getParameter("id");
         if (idParam != null) {
             Integer videoId = Integer.valueOf(idParam);
-
-            // thêm yêu thích
             service.addFavorite(user.getUserId(), videoId);
-
-            // quay lại trang chi tiết video
             resp.sendRedirect("detail?id=" + videoId);
             return;
         }
 
-        // Hiển thị danh sách yêu thích
         List<Favorite> list = service.findByUser(user.getUserId());
         req.setAttribute("list", list);
         req.getRequestDispatcher("/favorites.jsp").forward(req, resp);
     }
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)

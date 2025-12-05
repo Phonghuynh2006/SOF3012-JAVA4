@@ -29,15 +29,17 @@
                 <h1 class="login-title">ĐĂNG NHẬP</h1>
             </div>
 
-            <!-- ===== FORM LOGIN ===== -->
-            <form method="post" action="login" class="login-form">
+            <!-- SUCCESS (VD: sau khi đăng ký) -->
+            <c:if test="${not empty message}">
+                <p class="success">${message}</p>
+            </c:if>
 
-                <!-- lỗi -->
-                <c:if test="${not empty error}">
-                    <p style="color:#ff4d4d; font-size:14px; text-align:center;">
-                        ${error}
-                    </p>
-                </c:if>
+            <!-- ERROR -->
+            <c:if test="${not empty error}">
+                <p class="error">${error}</p>
+            </c:if>
+
+            <form method="post" action="login" class="login-form">
 
                 <div class="form-group">
                     <label class="form-label">Tên đăng nhập</label>
@@ -45,6 +47,7 @@
                            name="username"
                            class="form-input"
                            placeholder="Nhập tên đăng nhập"
+                           value="${param.username}"
                            required>
                 </div>
 
@@ -53,15 +56,16 @@
                     <div class="password-wrapper">
                         <input type="password"
                                name="password"
+                               id="passwordField"
                                class="form-input-password"
                                placeholder="Nhập mật khẩu"
                                required>
-                        <div class="password-toggle">👁️</div>
+                        <div class="password-toggle" id="togglePassword">👁️</div>
                     </div>
                 </div>
 
-                <a href="forgot-password">
-                    <div class="forgot-link">Quên mật khẩu?</div>
+                <a href="forgot-password" class="forgot-link">
+                    Quên mật khẩu?
                 </a>
 
                 <div class="login-actions">
@@ -77,11 +81,13 @@
                         <button class="social-btn">
                             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png" alt="Google">
                         </button>
+
                         <button class="social-btn">
                             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" alt="Facebook">
                         </button>
+
                         <button class="social-btn">
-                            <img src="https://images.seeklogo.com/logo-png/49/2/twitter-x-logo-png_seeklogo-492396.png" alt="Apple">
+                            <img src="https://images.seeklogo.com/logo-png/49/2/twitter-x-logo-png_seeklogo-492396.png" alt="Twitter X">
                         </button>
                     </div>
                 </div>
@@ -95,6 +101,16 @@
         </div>
     </div>
 </div>
+
+<!-- Toggle password script -->
+<script>
+    const pw = document.getElementById("passwordField");
+    const toggle = document.getElementById("togglePassword");
+
+    toggle.addEventListener("click", () => {
+        pw.type = pw.type === "password" ? "text" : "password";
+    });
+</script>
 
 </body>
 </html>

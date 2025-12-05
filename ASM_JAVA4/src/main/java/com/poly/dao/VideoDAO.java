@@ -92,10 +92,8 @@ public class VideoDAO extends AbstractDAO<Video> {
     }
     
     public void deleteById(Integer id) {
-        Video v = findById(String.valueOf(id));
-        if (v != null) {
-            delete(v);
-        }
+        super.delete(id);
     }
+
 
 }

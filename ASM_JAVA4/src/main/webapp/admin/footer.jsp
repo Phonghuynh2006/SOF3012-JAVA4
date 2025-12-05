@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
-<footer style="padding:20px; text-align:center; opacity:0.5;">
-    © 2024 Admin Panel - All Rights Reserved.
+<link rel="stylesheet" href="layout/footer.css">
+<footer class="admin-footer">
+    © 2024 PhimHay Admin Panel — All Rights Reserved.
 </footer>

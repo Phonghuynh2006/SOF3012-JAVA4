@@ -13,13 +13,12 @@
 </head>
 <body>
 
-<!-- HEADER CHUNG -->
 <jsp:include page="header.jsp"/>
 
 <div class="container">
 
-    <!-- ĐÁNH DẤU TRANG ĐANG ĐỨNG -->
-    <c:set var="page" value="profile" />
+    <!-- ĐÁNH DẤU TRANG ĐANG ĐỨNG ĐỂ SIDEBAR HIGHLIGHT -->
+    <c:set var="page" value="edit-profile" />
 
     <!-- SIDEBAR -->
     <jsp:include page="sidebar-profile.jsp" />
@@ -45,14 +44,17 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label>Họ và Tên</label>
-                    <input type="text" name="fullname" 
-                           value="${sessionScope.user.fullname}" required>
+                    <!-- Lưu fullname vừa nhập nếu lỗi -->
+                    <input type="text" name="fullname"
+                           value="${param.fullname != null ? param.fullname : sessionScope.user.fullname}" 
+                           required>
                 </div>
 
                 <div class="form-group">
                     <label>Tên người dùng</label>
-                    <input type="text" name="username" 
-                           value="${sessionScope.user.username}" readonly>
+                    <input type="text"
+                           value="${sessionScope.user.username}" 
+                           readonly>
                 </div>
             </div>
 
@@ -72,7 +74,6 @@
     </div>
 </div>
 
-<!-- FOOTER CHUNG -->
 <jsp:include page="footer.jsp"/>
 
 </body>

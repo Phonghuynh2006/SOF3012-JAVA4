@@ -1,6 +1,7 @@
 package com.poly.service;
 
 import java.util.List;
+import java.util.Date;
 
 import com.poly.dao.FavoriteDAO;
 import com.poly.dao.UserDAO;
@@ -15,12 +16,12 @@ public class FavoriteService {
     private UserDAO userDao = new UserDAO();
     private VideoDAO videoDao = new VideoDAO();
 
-    // ================= GET ALL FAVORITE BY USER =================
+    // Lấy danh sách favorite của 1 user
     public List<Favorite> findByUser(Integer userId) {
         return favoriteDao.findByUser(userId);
     }
 
-    // ================= ADD FAVORITE =================
+    // Thêm vào yêu thích
     public void addFavorite(Integer userId, Integer videoId) {
 
         User user = userDao.findById(userId);
@@ -30,32 +31,30 @@ public class FavoriteService {
             throw new RuntimeException("User hoặc Video không tồn tại!");
         }
 
-        // Check trùng yêu thích
-        Favorite exists = favoriteDao.findOne(userId, videoId);
-        if (exists != null) return;
+        // Không cho tạo trùng
+        if (favoriteDao.findOne(userId, videoId) != null)
+            return;
 
-        // Tạo mới
         Favorite fav = new Favorite();
         fav.setUser(user);
         fav.setVideo(video);
+        fav.setLikedDate(new Date());
 
         favoriteDao.create(fav);
     }
 
-    // ================= REMOVE FAVORITE =================
+    // Bỏ thích
     public void removeFavorite(Integer userId, Integer videoId) {
         favoriteDao.deleteFavorite(userId, videoId);
     }
 
-    // ================= CHECK USER FAVORITED VIDEO =================
+    // Kiểm tra user đã thích video chưa
     public boolean isFavorite(Integer userId, Integer videoId) {
         return favoriteDao.findOne(userId, videoId) != null;
     }
-    
- // ================= GET ALL FAVORITES =================
+
+    // Lấy tất cả favorite
     public List<Favorite> findAll() {
         return favoriteDao.findAll();
     }
-
-
 }

@@ -1,6 +1,7 @@
 package com.poly.service;
 
 import java.util.Date;
+import java.util.List;
 
 import com.poly.dao.ShareDAO;
 import com.poly.dao.UserDAO;
@@ -45,4 +46,17 @@ public class ShareService {
         // Tùy chọn: gửi email thật
         System.out.println("Đã gửi email chia sẻ đến: " + receiverEmail);
     }
+    
+    public List<Share> findAll() {
+        return shareDao.findAll();
+    }
+
+    public Share findById(Integer id) {
+        return shareDao.findById(id);
+    }
+
+    public void delete(Integer id) {
+        shareDao.delete(id);
+    }
+
 }
