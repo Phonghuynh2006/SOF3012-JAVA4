@@ -13,7 +13,7 @@ public class RestIO {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    // ========== Đọc JSON dạng chuỗi ==========
+    // ========== Đọc  ==========
     public static String readJson(HttpServletRequest req) throws IOException {
         req.setCharacterEncoding("UTF-8");
         StringBuilder sb = new StringBuilder();
@@ -28,7 +28,7 @@ public class RestIO {
         return sb.toString();
     }
 
-    // ========== Ghi JSON dạng chuỗi ==========
+    // ========== Ghi  ==========
     public static void writeJson(HttpServletResponse resp, String json) throws IOException {
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
@@ -36,13 +36,13 @@ public class RestIO {
         out.flush();
     }
 
-    // ========== Đọc JSON → Object ==========
+    // ========== Đọc  ==========
     public static <T> T readObject(HttpServletRequest req, Class<T> clazz) throws IOException {
         String json = readJson(req);
         return mapper.readValue(json, clazz);
     }
 
-    // ========== Ghi Object → JSON ==========
+    // ========== Ghi  ==========
     public static void writeObject(HttpServletResponse resp, Object data) throws IOException {
         resp.setContentType("application/json;charset=UTF-8");
         String json = mapper.writeValueAsString(data);
@@ -52,7 +52,7 @@ public class RestIO {
         out.flush();
     }
 
-    // ========== Ghi Object rỗng {} ==========
+    // ========== Ghi  ==========
     public static void writeEmptyObject(HttpServletResponse resp) throws IOException {
         writeJson(resp, "{}");
     }
